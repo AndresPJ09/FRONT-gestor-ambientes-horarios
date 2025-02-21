@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-import Instructor from './pages/p/o/Instructor';
+import Instructor from './pages/p/Instructor';
 
 const AppRoutes = () => {
   return (
