@@ -23,6 +23,7 @@ const Instructor = () => {
     hora_ingreso: '',
     hora_egreso: '',
     horas_asignadas: 0,
+    estado: true,
   });
 
   // Función para abrir el modal en modo creación
@@ -40,31 +41,23 @@ const Instructor = () => {
       hora_ingreso: '',
       hora_egreso: '',
       horas_asignadas: 0,
+      estado: true,
     });
     setEditando(false);
     setIdEditar(null);
     setModalAbierto(true); // Abrir el modal
   };
 
-
-  // Estado para manejar el modo de edición
   const [editando, setEditando] = useState(false);
   const [idEditar, setIdEditar] = useState(null);
-
-  // Estado para almacenar la lista de instructores
   const [instructores, setInstructores] = useState([]);
-
-  // Estado para controlar la visibilidad del modal
   const [modalAbierto, setModalAbierto] = useState(false);
-
   const [imagenModal, setImagenModal] = useState(null);
-
 
   // Obtener los instructores al cargar el componente
   useEffect(() => {
     cargarInstructores();
   }, []);
-
 
   // Función para cargar los instructores
   const cargarInstructores = async () => {
@@ -90,7 +83,6 @@ const Instructor = () => {
 
     if (file && (file.type === "image/png" || file.type === "image/jpeg")) {
       const reader = new FileReader();
-
       reader.onloadend = () => {
         const base64String = reader.result.split(",")[1]; // Quitar el prefijo "data:image/png;base64,"
         setFormData({
@@ -107,13 +99,11 @@ const Instructor = () => {
     }
   };
 
-
   // Manejar el envío del formulario (crear o actualizar)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const data = { ...formData };
-
     try {
       if (editando) {
         await actualizarInstructor(idEditar, data);
@@ -139,6 +129,7 @@ const Instructor = () => {
       tipo_contrato: '', especialidad: '', correo: '',
       fecha_inicio: '', fecha_finalizacion: '',
       hora_ingreso: '', hora_egreso: '', horas_asignadas: 0,
+      estado: true,
     });
     setEditando(false);
     setIdEditar(null);
@@ -179,7 +170,6 @@ const Instructor = () => {
     }
   };
 
-
   const handleEliminarImagen = () => {
     setFormData({
       ...formData,
@@ -187,8 +177,6 @@ const Instructor = () => {
       fotoPreview: null,
     });
   };
-
-
 
   return (
     <div className="container">
@@ -269,8 +257,6 @@ const Instructor = () => {
                     </div>
                   )}
                 </div>
-
-
 
                 {/* Campo: Identificación */}
                 <div className="campo">
@@ -410,6 +396,24 @@ const Instructor = () => {
                 </div>
               </div>
 
+              {editando && (
+                <div className="campo">
+                  <label htmlFor="estado">Estado:</label>
+                  <select
+                    id="estado"
+                    name="estado"
+                    value={formData.estado}
+                    onChange={handleChange}
+                    required
+                    className="input"
+                  >
+                    <option value={true}>Activo</option>
+                    <option value={false}>Inactivo</option>
+                  </select>
+                </div>
+              )}
+
+
               {/* Botón de envío */}
               <div className="botones">
                 <button className="boton-cancelar" type="button" onClick={() => setModalAbierto(false)}>
@@ -433,10 +437,16 @@ const Instructor = () => {
             <th className="th">Nombres</th>
             <th className="th">Apellidos</th>
             <th className="th">Identificación</th>
+            <th className="th">Correo</th>
             <th className="th">Foto</th>
             <th className="th">Tipo de Contrato</th>
             <th className="th">Especialidad</th>
-            <th className="th">Correo</th>
+            <th className="th">Fecha de inicio</th>
+            <th className="th">Fecha de finalización</th>
+            <th className="th">Hora de ingreso</th>
+            <th className="th">Hora de egreso</th>
+            <th className="th">Horas aignadas</th>
+            <th className="th">Estado</th>
             <th className="th">Acciones</th>
           </tr>
         </thead>
@@ -445,6 +455,8 @@ const Instructor = () => {
             <tr key={instructor.id} className="tr">
               <td className="td">{instructor.nombres}</td>
               <td className="td">{instructor.apellidos}</td>
+              <td className="td">{instructor.identificacion}</td>
+              <td className="td">{instructor.correo}</td>
               <td>
                 {instructor.foto && (
                   <>
@@ -458,10 +470,14 @@ const Instructor = () => {
                   </>
                 )}
               </td>
-              <td className="td">{instructor.identificacion}</td>
               <td className="td">{instructor.tipo_contrato}</td>
               <td className="td">{instructor.especialidad}</td>
-              <td className="td">{instructor.correo}</td>
+              <td className="td">{instructor.fecha_inicio}</td>
+              <td className="td">{instructor.fecha_finalizacion}</td>
+              <td className="td">{instructor.hora_ingreso}</td>
+              <td className="td">{instructor.hora_egreso}</td>
+              <td className="td">{instructor.horas_asignadas}</td>
+              <td className="td">{instructor.estado ? 'Activo' : 'Inactivo'}</td>
               <td className="td">
                 <button
                   onClick={() => handleEditar(instructor)}
