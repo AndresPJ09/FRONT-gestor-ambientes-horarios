@@ -1,45 +1,67 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
+import { obtenerNivelesFormacion } from '../../services/NivelFormacionService';
 import {
-    crearNivelFormacion,
-    actualizarNivelFormacion,
-    eliminarNivelFormacion,
-    obtenerNivelesFormacion,
-} from '../../services/NivelFormacionService';
+    crearPrograma,
+    actualizarPrograma,
+    eliminarPrograma,
+    obtenerProgramas,
+} from '../../services/ProgramaService';
 
-const NivelFormacion = () => {
+const Programa = () => {
     // Estado para manejar los datos del formulario
     const [formData, setFormData] = useState({
         codigo: '',
         nombre: '',
-        duracion: '',
+        nivel_formacion_id: 0,
         estado: true,
-        fecha_creo: new Date().toISOString(),
-        fecha_modifico: null,
-        fecha_elimino: null,
     });
 
-    // Estado para manejar la lista de niveles de formación
-    const [niveles, setNiveles] = useState([]);
+    // Función para abrir el modal en modo creación
+    const abrirModalCrear = () => {
+        setFormData({
+            codigo: '',
+            nombre: '',
+            nivel_formacion_id: 0,
+            estado: true,
+        });
+        setEditando(false);
+        setIdEditar(null);
+        setModalAbierto(true); // Abrir el modal
+    };
+
     const [editando, setEditando] = useState(false);
     const [idEditar, setIdEditar] = useState(null);
+    const [programas, setProgramas] = useState([]);
     const [modalAbierto, setModalAbierto] = useState(false);
+    const [nivelesFormacion, setNivelFormacion] = useState([]);
 
-    // Cargar los niveles de formación al montar el componente
+    // Obtener los programas al cargar el componente
     useEffect(() => {
-        cargarNiveles();
+          cargarNivelesFormacion();
+          cargarProgramas();
     }, []);
 
-    const cargarNiveles = async () => {
+    // Función para cargar los programas
+    const cargarProgramas = async () => {
         try {
-            const data = await obtenerNivelesFormacion();
-            setNiveles(data);
+            const data = await obtenerProgramas();
+            setProgramas(data);
         } catch (error) {
-            console.error('Error al cargar niveles de formación:', error);
+            console.error('Error al cargar programas:', error);
         }
     };
 
-    // Manejar cambios en los inputs del formulario
+    const cargarNivelesFormacion = async () => {
+        try {
+          const data = await obtenerNivelesFormacion();
+          setNivelFormacion(data); // Almacena los tipos en el estado
+        } catch (error) {
+          console.error('Error al obtener los tipos de vinculación:', error);
+        }
+      };
+
+    // Manejar cambios en los campos del formulario
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -48,53 +70,51 @@ const NivelFormacion = () => {
         });
     };
 
-    // Manejar envío del formulario (crear o actualizar)
+    // Manejar el envío del formulario (crear o actualizar)
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         const data = { ...formData };
 
         try {
             if (editando) {
-                await actualizarNivelFormacion(idEditar, data);
-                Swal.fire('Actualizado', 'Nivel de formación actualizado', 'success');
+                await actualizarPrograma(idEditar, data);
+                Swal.fire('Actualizado', 'Programa actualizado exitosamente', 'success');
             } else {
-                await crearNivelFormacion(data);
-                Swal.fire('Creado', 'Nivel de formación creado', 'success');
+                await crearPrograma(data);
+                Swal.fire('Creado', 'Programa creado exitosamente', 'success');
             }
 
+            // Limpiar el formulario después del envío
             resetFormulario();
-            cargarNiveles();
+            cargarProgramas();
         } catch (error) {
             console.error('Error:', error);
             Swal.fire('Error', 'Ocurrió un problema', 'error');
         }
     };
 
-    // Restablecer el formulario
+    // Función para restablecer el formulario
     const resetFormulario = () => {
         setFormData({
-            codigo: '',
-            nombre: '',
-            duracion: '',
-            estado: true,
-            fecha_creo: new Date().toISOString(),
-            fecha_modifico: null,
-            fecha_elimino: null,
+            codigo: '', nombre: '', nivel_formacion_id: 0, estado: true,
         });
         setEditando(false);
         setIdEditar(null);
         setModalAbierto(false);
     };
 
-    // Editar un nivel de formación
-    const handleEditar = (nivel) => {
-        setFormData({ ...nivel });
+    // Función para editar un programa
+    const handleEditar = (programa) => {
+        setFormData({
+            ...programa,
+        });
         setEditando(true);
-        setIdEditar(nivel.id);
+        setIdEditar(programa.id);
         setModalAbierto(true);
     };
 
-    // Eliminar un nivel de formación
+    // Función para eliminar un programa con confirmación
     const handleEliminar = async (id) => {
         const resultado = await Swal.fire({
             title: '¿Estás seguro?',
@@ -107,31 +127,34 @@ const NivelFormacion = () => {
 
         if (resultado.isConfirmed) {
             try {
-                await eliminarNivelFormacion(id);
-                Swal.fire('Eliminado', 'Nivel de formación eliminado', 'success');
-                cargarNiveles();
+                await eliminarPrograma(id);
+                Swal.fire('Eliminado', 'Programa eliminado exitosamente', 'success');
+                cargarProgramas();
             } catch (error) {
-                console.error('Error al eliminar:', error);
-                Swal.fire('Error', 'No se pudo eliminar', 'error');
+                console.error('Error al eliminar el programa:', error);
+                Swal.fire('Error', 'No se pudo eliminar el programa', 'error');
             }
         }
     };
 
     return (
         <div className="container">
-            <h1 className="titulo">Gestión de Niveles de Formación</h1>
+            <h1 className="titulo">Gestión de Programas</h1>
 
-            <button onClick={() => setModalAbierto(true)} className="boton-crear">
-                Crear Nivel de Formación
+            {/* Botón para abrir el modal de creación */}
+            <button onClick={abrirModalCrear} className="boton-crear">
+                Crear Programa
             </button>
 
+            {/* Modal para el formulario */}
             {modalAbierto && (
                 <div className="modal-overlay">
                     <div className="modal">
                         <h2 className="modal-titulo">
-                            {editando ? 'Editar Nivel de Formación' : 'Crear Nivel de Formación'}
+                            {editando ? 'Editar Programa' : 'Crear Programa'}
                         </h2>
                         <form onSubmit={handleSubmit} className="formulario">
+                            {/* Campos del formulario */}
                             <div className="fila">
                                 <div className="campo">
                                     <label htmlFor="codigo">Código:</label>
@@ -145,7 +168,7 @@ const NivelFormacion = () => {
                                         className="input"
                                     />
                                 </div>
-                                
+
                                 <div className="campo">
                                     <label htmlFor="nombre">Nombre:</label>
                                     <input
@@ -162,16 +185,22 @@ const NivelFormacion = () => {
 
                             <div className="fila">
                                 <div className="campo">
-                                    <label htmlFor="duracion">Duración:</label>
-                                    <input
-                                        type="text"
-                                        id="duracion"
-                                        name="duracion"
-                                        value={formData.duracion}
+                                    <label htmlFor="nivel_formacion_id">Nivel formacion:</label>
+                                    <select
+                                        id="nivel_formacion_id"
+                                        name="nivel_formacion_id"
+                                        value={formData.nivel_formacion_id}
                                         onChange={handleChange}
                                         required
                                         className="input"
-                                    />
+                                    >
+                                        <option value="">Seleccione...</option>
+                                        {nivelesFormacion.map((tipo) => (
+                                            <option key={tipo.id} value={tipo.id}>
+                                                {tipo.nombre}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
 
                                 {editando && (
@@ -192,12 +221,13 @@ const NivelFormacion = () => {
                                 )}
                             </div>
 
+                            {/* Botones de guardar y cancelar */}
                             <div className="botones">
-                                <button className="boton-cancelar" type="button" onClick={resetFormulario}>
+                                <button className="boton-cancelar" type="button" onClick={() => setModalAbierto(false)}>
                                     Cancelar
                                 </button>
                                 <button className="boton-guardar" type="submit">
-                                    {editando ? 'Actualizar' : 'Crear'}
+                                    {editando ? 'Actualizar programa' : 'Crear programa'}
                                 </button>
                             </div>
                         </form>
@@ -205,29 +235,38 @@ const NivelFormacion = () => {
                 </div>
             )}
 
-            <h2 className="subtitulo">Lista de Niveles de Formación</h2>
+            {/* Tabla para mostrar los programs */}
+            <h2 className="subtitulo">Lista de programas</h2>
             <table className="tabla">
                 <thead>
                     <tr>
                         <th className="th">Código</th>
                         <th className="th">Nombre</th>
-                        <th className="th">Duración</th>
+                        <th className="th">Nivel de formacion</th>
                         <th className="th">Estado</th>
                         <th className="th">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {niveles.map((nivel) => (
-                        <tr key={nivel.id} className="tr">
-                            <td className="td">{nivel.codigo}</td>
-                            <td className="td">{nivel.nombre}</td>
-                            <td className="td">{nivel.duracion}</td>
-                            <td className="td">{nivel.estado ? 'Activo' : 'Inactivo'}</td>
+                    {programas.map((programa) => (
+                        <tr key={programa.id} className="tr">
+                            <td className="td">{programa.codigo}</td>
+                            <td className="td">{programa.nombre}</td>
+                            <td>
+                                {nivelesFormacion.find(tipo => tipo.id === programa.nivel_formacion_id)?.nombre || "No asignado"}
+                            </td>
+                            <td className="td">{programa.estado ? 'Activo' : 'Inactivo'}</td>
                             <td className="td">
-                                <button onClick={() => handleEditar(nivel)} className="boton-editar">
+                                <button
+                                    onClick={() => handleEditar(programa)}
+                                    className="boton-editar"
+                                >
                                     Editar
                                 </button>
-                                <button onClick={() => handleEliminar(nivel.id)} className="boton-eliminar">
+                                <button
+                                    onClick={() => handleEliminar(programa.id)}
+                                    className="boton-eliminar"
+                                >
                                     Eliminar
                                 </button>
                             </td>
@@ -239,4 +278,4 @@ const NivelFormacion = () => {
     );
 };
 
-export default NivelFormacion;
+export default Programa;

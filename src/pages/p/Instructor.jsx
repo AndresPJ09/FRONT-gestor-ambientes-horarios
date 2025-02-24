@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
+import { obtenerTipoVinculos } from '../../services/TipoVinculoService';
 import {
   crearInstructor,
   actualizarInstructor,
@@ -15,7 +16,7 @@ const Instructor = () => {
     foto: null, // Para manejar archivos (imagen)
     fotoPreview: '',
     identificacion: '',
-    tipo_contrato: '',
+    tipo_vinculacion_id: 0,
     especialidad: '',
     correo: '',
     fecha_inicio: '',
@@ -33,7 +34,7 @@ const Instructor = () => {
       apellidos: '',
       foto: null,
       identificacion: '',
-      tipo_contrato: '',
+      tipo_vinculacion_id: 0,
       especialidad: '',
       correo: '',
       fecha_inicio: '',
@@ -53,10 +54,12 @@ const Instructor = () => {
   const [instructores, setInstructores] = useState([]);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [imagenModal, setImagenModal] = useState(null);
+  const [tiposVinculacion, setTiposVinculacion] = useState([]);
 
   // Obtener los instructores al cargar el componente
   useEffect(() => {
     cargarInstructores();
+    cargarTiposVinculacion();
   }, []);
 
   // Función para cargar los instructores
@@ -66,6 +69,15 @@ const Instructor = () => {
       setInstructores(data);
     } catch (error) {
       console.error('Error al cargar instructores:', error);
+    }
+  };
+
+  const cargarTiposVinculacion = async () => {
+    try {
+      const data = await obtenerTipoVinculos();
+      setTiposVinculacion(data); // Almacena los tipos en el estado
+    } catch (error) {
+      console.error('Error al obtener los tipos de vinculación:', error);
     }
   };
 
@@ -126,7 +138,7 @@ const Instructor = () => {
   const resetFormulario = () => {
     setFormData({
       nombres: '', apellidos: '', foto: null, identificacion: '',
-      tipo_contrato: '', especialidad: '', correo: '',
+      tipo_vinculacion_id: 0, especialidad: '', correo: '',
       fecha_inicio: '', fecha_finalizacion: '',
       hora_ingreso: '', hora_egreso: '', horas_asignadas: 0,
       estado: true,
@@ -226,7 +238,6 @@ const Instructor = () => {
               </div>
 
               {/* Campo: Foto */}
-              {/* Campo: Foto */}
               <div className="fila">
                 <div className="campo">
                   <label htmlFor="foto">Foto:</label>
@@ -273,21 +284,24 @@ const Instructor = () => {
                 </div>
               </div>
 
-              {/* Campo: Tipo de Contrato */}
+              {/* Campo: Tipo de Contrato/Vinculo */}
               <div className="fila">
                 <div className="campo">
-                  <label htmlFor="tipo_contrato">Tipo de Contrato:</label>
+                  <label htmlFor="tipo_vinculacion_id">Tipo de tipo_vinculacion:</label>
                   <select
-                    id="tipo_contrato"
-                    name="tipo_contrato"
-                    value={formData.tipo_contrato}
+                    id="tipo_vinculacion_id"
+                    name="tipo_vinculacion_id"
+                    value={formData.tipo_vinculacion_id}
                     onChange={handleChange}
                     required
                     className="input"
                   >
                     <option value="">Seleccione...</option>
-                    <option value="Contrato">Contrato</option>
-                    <option value="Planta">Planta</option>
+                    {tiposVinculacion.map((tipo) => (
+                      <option key={tipo.id} value={tipo.id}>
+                        {tipo.nombre}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -439,7 +453,7 @@ const Instructor = () => {
             <th className="th">Identificación</th>
             <th className="th">Correo</th>
             <th className="th">Foto</th>
-            <th className="th">Tipo de Contrato</th>
+            <th className="th">Tipo de vinculación</th>
             <th className="th">Especialidad</th>
             <th className="th">Fecha de inicio</th>
             <th className="th">Fecha de finalización</th>
@@ -470,7 +484,9 @@ const Instructor = () => {
                   </>
                 )}
               </td>
-              <td className="td">{instructor.tipo_contrato}</td>
+              <td>
+                {tiposVinculacion.find(tipo => tipo.id === instructor.tipo_vinculacion_id)?.nombre || "No asignado"}
+              </td>
               <td className="td">{instructor.especialidad}</td>
               <td className="td">{instructor.fecha_inicio}</td>
               <td className="td">{instructor.fecha_finalizacion}</td>
