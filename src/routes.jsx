@@ -8,6 +8,9 @@ import NivelFormacion from './pages/p/Nivelformacion';
 import Programa from './pages/o/Programa';
 import Competencia from './pages/o/Competencia';
 import ResultadoAprendizaje from './pages/o/ResultadoAprendizaje';
+import Fase from './pages/p/Fase';
+import Proyecto from './pages/p/Proyecto';
+
 
 const AppRoutes = () => {
   return (
@@ -22,6 +25,8 @@ const AppRoutes = () => {
         <Route path="/programa" element={<Programa />} /> 
         <Route path="/competencia" element={<Competencia />} /> 
         <Route path="/resultadoaprendizaje" element={<ResultadoAprendizaje />} />
+        <Route path="/fase" element={<Fase />} />
+        <Route path="/proyecto" element={<Proyecto />} />
       </Routes>
     </Router>
   );
