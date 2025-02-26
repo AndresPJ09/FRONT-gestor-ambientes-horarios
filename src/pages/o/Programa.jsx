@@ -97,7 +97,10 @@ const Programa = () => {
     // Función para restablecer el formulario
     const resetFormulario = () => {
         setFormData({
-            codigo: '', nombre: '', nivel_formacion_id: 0, estado: true,
+            codigo: '', 
+            nombre: '', 
+            nivel_formacion_id: 0, 
+            estado: true,
         });
         setEditando(false);
         setIdEditar(null);

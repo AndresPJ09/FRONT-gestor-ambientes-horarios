@@ -10,6 +10,8 @@ import Competencia from './pages/o/Competencia';
 import ResultadoAprendizaje from './pages/o/ResultadoAprendizaje';
 import Fase from './pages/p/Fase';
 import Proyecto from './pages/p/Proyecto';
+import Ficha from './pages/o/Ficha';
+import Horario from './pages/o/Horario';
 
 
 const AppRoutes = () => {
@@ -27,6 +29,8 @@ const AppRoutes = () => {
         <Route path="/resultadoaprendizaje" element={<ResultadoAprendizaje />} />
         <Route path="/fase" element={<Fase />} />
         <Route path="/proyecto" element={<Proyecto />} />
+        <Route path="/ficha" element={<Ficha />} />
+        <Route path="/horario" element={<Horario />} />
       </Routes>
     </Router>
   );
