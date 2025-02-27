@@ -256,6 +256,7 @@ const Ficha = () => {
                                     />
 
                                 </div>
+                                
                                 {editando && (
                                     
                                     <div className="campo">

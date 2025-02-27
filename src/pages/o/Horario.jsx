@@ -28,6 +28,28 @@ const Horario = () => {
         estado: true,
     });
 
+    // Función para abrir el modal en modo creación
+    const abrirModalCrear = () => {
+        setFormData({
+            usuario_id: 0,
+            ficha_id: 0,
+            ambiente_id: 0,
+            periodo_id: 0,
+            instructor_id: 0,
+            jornada_programada: '',
+            fecha_inicio_hora_ingreso: '',
+            fecha_fin_hora_egreso: '',
+            horas: 0,
+            validacion: '',
+            observaciones: '',
+            estado: true,
+        });
+        setEditando(false);
+        setIdEditar(null);
+        setModalAbierto(true); // Abrir el modal
+    };
+
+
     const [editando, setEditando] = useState(false);
     const [idEditar, setIdEditar] = useState(null);
     const [horarios, setHorarios] = useState([]);
@@ -118,27 +140,36 @@ const Horario = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        let newValue = value;
+    
+        if (name === "estado") {
+            newValue = value === "true"; // Convierte "true" en true y "false" en false
+        }
         setFormData((prevData) => {
             const newData = { ...prevData, [name]: value };
 
-        // Si el campo es instructor_id, mostrar los campos adicionales
-        if (name === 'instructor_id' && value) {
-            setMostrarHorario(true);
-        }
-
-
-        // Si los campos de fecha están completos, calcula las horas
-        if (name === 'fecha_inicio_hora_ingreso' || name === 'fecha_fin_hora_egreso') {
-            const inicio = new Date(newData.fecha_inicio_hora_ingreso);
-            const fin = new Date(newData.fecha_fin_hora_egreso);
-            if (!isNaN(inicio) && !isNaN(fin)) {
-                const diferenciaHoras = (fin - inicio) / (1000 * 60 * 60);
-                newData.horas = diferenciaHoras > 0 ? diferenciaHoras : 0;
+            // Si el campo es instructor_id, mostrar los campos adicionales
+            if (name === 'instructor_id' && value) {
+                setMostrarHorario(true);
             }
-        }
 
-        return newData;
-    });
+            if (name === "estado") {
+                newData.estado = value === "true";
+            }    
+
+
+            // Si los campos de fecha están completos, calcula las horas
+            if (name === 'fecha_inicio_hora_ingreso' || name === 'fecha_fin_hora_egreso') {
+                const inicio = new Date(newData.fecha_inicio_hora_ingreso);
+                const fin = new Date(newData.fecha_fin_hora_egreso);
+                if (!isNaN(inicio) && !isNaN(fin)) {
+                    const diferenciaHoras = (fin - inicio) / (1000 * 60 * 60);
+                    newData.horas = diferenciaHoras > 0 ? diferenciaHoras : 0;
+                }
+            }
+
+            return newData;
+        });
     };
 
     const handleSubmit = async (e) => {
@@ -181,7 +212,14 @@ const Horario = () => {
     };
 
     const handleEditar = (horario) => {
-        setFormData({ ...horario });
+        setFormData({ ...horario,
+            fecha_inicio_hora_ingreso: horario.fecha_inicio_hora_ingreso 
+            ? new Date(horario.fecha_inicio_hora_ingreso).toISOString().slice(0, 16) 
+            : '',
+        fecha_fin_hora_egreso: horario.fecha_fin_hora_egreso 
+            ? new Date(horario.fecha_fin_hora_egreso).toISOString().slice(0, 16) 
+            : '',
+         });
         setEditando(true);
         setIdEditar(horario.id);
         setModalAbierto(true);
@@ -212,7 +250,9 @@ const Horario = () => {
     return (
         <div className="container">
             <h1 className="titulo">Gestión de Horarios</h1>
-            <button onClick={() => setModalAbierto(true)} className="boton-crear">Crear Horario</button>
+            <button onClick={abrirModalCrear} className="boton-crear">
+                Crear Horario
+            </button>
 
             {modalAbierto && (
                 <div className="modal-overlay">
@@ -275,7 +315,7 @@ const Horario = () => {
                                     </select>
                                 </div>
                             </div>
-                            
+
 
                             {formData.instructor_id && (
                                 <>
@@ -283,11 +323,11 @@ const Horario = () => {
                                         <div className="campo">
                                             <label>Jornada Programada:</label>
                                             <select name="jornada_programada" value={formData.jornada_programada} onChange={handleChange} required className="input">
-                                            <option value="">Seleccione...</option>
-                                            <option value="Mañana">Mañana</option>
-                                            <option value="Tarde">Tarde</option>
-                                            <option value="Noche">Noche</option>
-                                        </select>
+                                                <option value="">Seleccione...</option>
+                                                <option value="Mañana">Mañana</option>
+                                                <option value="Tarde">Tarde</option>
+                                                <option value="Noche">Noche</option>
+                                            </select>
                                         </div>
 
                                         <div className="campo">
@@ -320,11 +360,33 @@ const Horario = () => {
                                     <label>Observaciones:</label>
                                     <textarea name="observaciones" value={formData.observaciones} onChange={handleChange} className="input" />
                                 </div>
+
+                                {editando && (
+                                    <div className="campo">
+                                        <label htmlFor="estado">Estado:</label>
+                                        <select
+                                            id="estado"
+                                            name="estado"
+                                            value={formData.estado.toString()}
+                                            onChange={handleChange}
+                                            required
+                                            className="input"
+                                        >
+                                            <option value={true}>Activo</option>
+                                            <option value={false}>Inactivo</option>
+                                        </select>
+                                    </div>
+                                )}
                             </div>
 
+                            {/* Botones de guardar y cancelar */}
                             <div className="botones">
-                                <button type="button" onClick={() => setModalAbierto(false)} className="boton-cancelar">Cancelar</button>
-                                <button type="submit" className="boton-guardar">{editando ? 'Actualizar Horario' : 'Crear Horario'}</button>
+                                <button className="boton-cancelar" type="button" onClick={() => setModalAbierto(false)}>
+                                    Cancelar
+                                </button>
+                                <button className="boton-guardar" type="submit">
+                                    {editando ? 'Actualizar horario' : 'Crear horario'}
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -362,8 +424,18 @@ const Horario = () => {
                             <td className="td">{horario.observaciones}</td>
                             <td className="td">{horario.estado ? 'Activo' : 'Inactivo'}</td>
                             <td className="td">
-                                <button onClick={() => handleEditar(horario)} className="boton-editar">Editar</button>
-                                <button onClick={() => handleEliminar(horario.id)} className="boton-eliminar">Eliminar</button>
+                                <button
+                                    onClick={() => handleEditar(horario)}
+                                    className="boton-editar"
+                                >
+                                    Editar
+                                </button>
+                                <button
+                                    onClick={() => handleEliminar(horario.id)}
+                                    className="boton-eliminar"
+                                >
+                                    Eliminar
+                                </button>
                             </td>
                         </tr>
                     ))}
