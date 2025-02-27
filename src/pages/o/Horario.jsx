@@ -291,13 +291,13 @@ const Horario = () => {
                                         </div>
 
                                         <div className="campo">
-                                            <label>Fecha Inicio - Hora Ingreso:</label>
+                                            <label>Fecha Inicio y hora Ingreso:</label>
                                             <input type="datetime-local" name="fecha_inicio_hora_ingreso" value={formData.fecha_inicio_hora_ingreso} onChange={handleChange} required className="input" />
                                         </div>
                                     </div>
                                     <div className="fila">
                                         <div className="campo">
-                                            <label>Fecha Fin - Hora Egreso:</label>
+                                            <label>Fecha Fin y hora Egreso:</label>
                                             <input type="datetime-local" name="fecha_fin_hora_egreso" value={formData.fecha_fin_hora_egreso} onChange={handleChange} required className="input" />
                                         </div>
                                         <div className="campo">
@@ -338,6 +338,8 @@ const Horario = () => {
                         <th className="th">Usuario</th>
                         <th className="th">Ficha</th>
                         <th className="th">Periodo</th>
+                        <th className="th">Fecha de inicio y hora de ingreso </th>
+                        <th className="th">Fecha de fin y hora de egreso</th>
                         <th className="th">Horas</th>
                         <th className="th">Observaciones</th>
                         <th className="th">Estado</th>
@@ -354,6 +356,8 @@ const Horario = () => {
 
                             <td className="td">{fichas.find(p => p.id === horario.ficha_id)?.codigo || 'No asignado'}</td>
                             <td className="td">{periodos.find(p => p.id === horario.periodo_id)?.nombre || 'No asignado'}</td>
+                            <td className="td">{horario.fecha_inicio_hora_ingreso}</td>
+                            <td className="td">{horario.fecha_fin_hora_egreso}</td>
                             <td className="td">{horario.horas}</td>
                             <td className="td">{horario.observaciones}</td>
                             <td className="td">{horario.estado ? 'Activo' : 'Inactivo'}</td>

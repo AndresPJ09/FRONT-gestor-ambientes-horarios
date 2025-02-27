@@ -484,7 +484,7 @@ const Instructor = () => {
                   </>
                 )}
               </td>
-              <td>
+              <td className="td">
                 {tiposVinculacion.find(tipo => tipo.id === instructor.tipo_vinculacion_id)?.nombre || "No asignado"}
               </td>
               <td className="td">{instructor.especialidad}</td>
