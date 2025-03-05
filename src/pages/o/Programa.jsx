@@ -73,8 +73,8 @@ const Programa = () => {
     // Manejar el envío del formulario (crear o actualizar)
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         const data = { ...formData };
+        console.log("Datos enviados:", formData);
 
         try {
             if (editando) {
@@ -143,7 +143,6 @@ const Programa = () => {
     return (
         <div className="container">
             <h1 className="titulo">Gestión de Programas</h1>
-
             {/* Botón para abrir el modal de creación */}
             <button onClick={abrirModalCrear} className="boton-crear">
                 Crear Programa
@@ -198,9 +197,9 @@ const Programa = () => {
                                         className="input"
                                     >
                                         <option value="">Seleccione...</option>
-                                        {nivelesFormacion.map((tipo) => (
-                                            <option key={tipo.id} value={tipo.id}>
-                                                {tipo.nombre}
+                                        {nivelesFormacion.map((nivel) => (
+                                            <option key={nivel.id} value={nivel.id}>
+                                                {nivel.nombre}
                                             </option>
                                         ))}
                                     </select>

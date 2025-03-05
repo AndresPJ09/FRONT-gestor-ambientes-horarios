@@ -28,7 +28,6 @@ const Horario = () => {
         estado: true,
     });
 
-    // Función para abrir el modal en modo creación
     const abrirModalCrear = () => {
         setFormData({
             usuario_id: 0,
@@ -46,9 +45,8 @@ const Horario = () => {
         });
         setEditando(false);
         setIdEditar(null);
-        setModalAbierto(true); // Abrir el modal
+        setModalAbierto(true);
     };
-
 
     const [editando, setEditando] = useState(false);
     const [idEditar, setIdEditar] = useState(null);
@@ -140,29 +138,23 @@ const Horario = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        let newValue = value;
-    
-        if (name === "estado") {
-            newValue = value === "true"; // Convierte "true" en true y "false" en false
-        }
-        setFormData((prevData) => {
-            const newData = { ...prevData, [name]: value };
+
+        setFormData((formData) => {
+            const newData = {
+                ...formData,
+                [name]: value,
+            };
 
             // Si el campo es instructor_id, mostrar los campos adicionales
             if (name === 'instructor_id' && value) {
                 setMostrarHorario(true);
             }
 
-            if (name === "estado") {
-                newData.estado = value === "true";
-            }    
-
-
-            // Si los campos de fecha están completos, calcula las horas
             if (name === 'fecha_inicio_hora_ingreso' || name === 'fecha_fin_hora_egreso') {
                 const inicio = new Date(newData.fecha_inicio_hora_ingreso);
                 const fin = new Date(newData.fecha_fin_hora_egreso);
-                if (!isNaN(inicio) && !isNaN(fin)) {
+
+                if (!isNaN(inicio.getTime()) && !isNaN(fin.getTime())) {
                     const diferenciaHoras = (fin - inicio) / (1000 * 60 * 60);
                     newData.horas = diferenciaHoras > 0 ? diferenciaHoras : 0;
                 }
@@ -175,6 +167,8 @@ const Horario = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const data = { ...formData };
+        console.log("Datos enviados:", formData);
+
         try {
             if (editando) {
                 await actualizarHorario(idEditar, data);
@@ -212,14 +206,15 @@ const Horario = () => {
     };
 
     const handleEditar = (horario) => {
-        setFormData({ ...horario,
-            fecha_inicio_hora_ingreso: horario.fecha_inicio_hora_ingreso 
-            ? new Date(horario.fecha_inicio_hora_ingreso).toISOString().slice(0, 16) 
-            : '',
-        fecha_fin_hora_egreso: horario.fecha_fin_hora_egreso 
-            ? new Date(horario.fecha_fin_hora_egreso).toISOString().slice(0, 16) 
-            : '',
-         });
+        setFormData({
+            ...horario,
+            fecha_inicio_hora_ingreso: horario.fecha_inicio_hora_ingreso
+                ? new Date(horario.fecha_inicio_hora_ingreso).toISOString().slice(0, 16)
+                : '',
+            fecha_fin_hora_egreso: horario.fecha_fin_hora_egreso
+                ? new Date(horario.fecha_fin_hora_egreso).toISOString().slice(0, 16)
+                : '',
+        });
         setEditando(true);
         setIdEditar(horario.id);
         setModalAbierto(true);
@@ -277,8 +272,8 @@ const Horario = () => {
                                     <label>Ambientes:</label>
                                     <select name="ambiente_id" value={formData.ambiente_id} onChange={handleChange} required className="input">
                                         <option value="">Seleccione...</option>
-                                        {ambientes.map((p) => (
-                                            <option key={p.id} value={p.id}>{p.nombre}</option>
+                                        {ambientes.map((ambi) => (
+                                            <option key={ambi.id} value={ambi.id}>{ambi.nombre}</option>
                                         ))}
                                     </select>
                                 </div>
@@ -299,8 +294,8 @@ const Horario = () => {
                                     <label>Ficha:</label>
                                     <select name="ficha_id" value={formData.ficha_id} onChange={handleChange} required className="input">
                                         <option value="">Seleccione...</option>
-                                        {fichas.map((p) => (
-                                            <option key={p.id} value={p.id}>{p.codigo}</option>
+                                        {fichas.map((f) => (
+                                            <option key={f.id} value={f.id}>{f.codigo}</option>
                                         ))}
                                     </select>
                                 </div>
@@ -309,13 +304,12 @@ const Horario = () => {
                                     <label>Instructor:</label>
                                     <select name="instructor_id" value={formData.instructor_id} onChange={handleChange} required className="input">
                                         <option value="">Seleccione...</option>
-                                        {instructores.map((p) => (
-                                            <option key={p.id} value={p.id}>{p.nombres}</option>
+                                        {instructores.map((ins) => (
+                                            <option key={ins.id} value={ins.id}>{ins.nombres}</option>
                                         ))}
                                     </select>
                                 </div>
                             </div>
-
 
                             {formData.instructor_id && (
                                 <>
@@ -367,7 +361,7 @@ const Horario = () => {
                                         <select
                                             id="estado"
                                             name="estado"
-                                            value={formData.estado.toString()}
+                                            value={formData.estado}
                                             onChange={handleChange}
                                             required
                                             className="input"
@@ -379,7 +373,6 @@ const Horario = () => {
                                 )}
                             </div>
 
-                            {/* Botones de guardar y cancelar */}
                             <div className="botones">
                                 <button className="boton-cancelar" type="button" onClick={() => setModalAbierto(false)}>
                                     Cancelar

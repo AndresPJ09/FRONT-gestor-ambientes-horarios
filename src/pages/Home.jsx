@@ -7,7 +7,6 @@ const Home = () => {
       <nav style={{ display: "flex", gap: "10px", padding: "10px", background: "#f0f0f0" }}>
         <Link to="/competencia">Competencia</Link>
         <Link to="/consolidado-ambiente">Consolidado Ambiente</Link>
-        <Link to="/ficha">Ficha</Link>
         <Link to="/programa">Programa</Link>
         <Link to="/resultado-aprendizaje">Resultado Aprendizaje</Link>
         <Link to="/ambiente">Ambiente</Link>
