@@ -153,13 +153,12 @@ const Horario = () => {
             if (name === 'fecha_inicio_hora_ingreso' || name === 'fecha_fin_hora_egreso') {
                 const inicio = new Date(newData.fecha_inicio_hora_ingreso);
                 const fin = new Date(newData.fecha_fin_hora_egreso);
-
+            
                 if (!isNaN(inicio.getTime()) && !isNaN(fin.getTime())) {
                     const diferenciaHoras = (fin - inicio) / (1000 * 60 * 60);
-                    newData.horas = diferenciaHoras > 0 ? diferenciaHoras : 0;
+                    newData.horas = diferenciaHoras > 0 ? Math.floor(diferenciaHoras) : 0; // Redondea hacia abajo
                 }
             }
-
             return newData;
         });
     };
