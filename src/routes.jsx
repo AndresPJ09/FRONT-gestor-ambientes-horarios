@@ -12,6 +12,7 @@ import Fase from './pages/p/Fase';
 import Proyecto from './pages/p/Proyecto';
 import Ficha from './pages/o/Ficha';
 import Horario from './pages/o/Horario';
+import InstructorHorario from './pages/o/InstructorHorario';
 
 
 const AppRoutes = () => {
@@ -31,6 +32,7 @@ const AppRoutes = () => {
         <Route path="/proyecto" element={<Proyecto />} />
         <Route path="/ficha" element={<Ficha />} />
         <Route path="/horario" element={<Horario />} />
+        <Route path="/instructorhorario" element={< InstructorHorario/>} />
       </Routes>
     </Router>
   );

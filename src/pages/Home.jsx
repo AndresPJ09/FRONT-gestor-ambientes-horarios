@@ -18,6 +18,7 @@ const Home = () => {
         <Link to="/tipovinculo">Tipo Vínculo</Link>
         <Link to="/ficha">Ficha</Link>
         <Link to="/horario">Horario</Link>
+        <Link to="/instructorhorario">Horario de instructores</Link>
       </nav>
 
       <p>Hola, bienvenido</p>

@@ -288,3 +288,44 @@ button:focus-visible {
 }
 
 
+.filtros {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.filtros select {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.btn-limpiar {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #ff4d4d;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-limpiar:hover {
+  background-color: #cc0000;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.th, .td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.th {
+  background-color: #f2f2f2;
+}
