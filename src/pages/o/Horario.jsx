@@ -73,139 +73,66 @@ const Horario = () => {
     const [finlectivaSeleccionado, setFinLectivaSeleccionado] = useState('');
     const [jornadaTecnicaSeleccionado, setJornadaTecnicaSeleccionado] = useState('');
 
-    const [mostrarHorario, setMostrarHorario] = useState(false);
-
-    const [diasSemana, setDiasSemana] = useState([]);
-    const diasDisponibles = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-
-    const agregarDiaSemana = () => {
-        setDiasSemana([...diasSemana, { dia: '', jornada: '' }]);
-    };
-
-    const handleDiaChange = (index, field, value) => {
-        const nuevosDias = [...diasSemana];
-        nuevosDias[index][field] = value;
-        setDiasSemana(nuevosDias);
-    };
-
     useEffect(() => {
-        cargarPeriodos();
-        cargarHorarios();
-        cargarFichas();
-        cargarUsuarios();
-        cargarAmbientes();
-        cargarInstructores();
-        cargarProgramas();
-        cargarNiveles();
-        cargarProyectos();
-    }, [formData.fecha_inicio_hora_ingreso, formData.fecha_fin_hora_egreso]);
+        cargarDatosIniciales();
+    }, []);
 
-    const cargarHorarios = async () => {
+    const cargarDatosIniciales = async () => {
         try {
-            const data = await obtenerHorarios();
-            setHorarios(data);
+            const [
+                periodosData,
+                horariosData,
+                fichasData,
+                usuariosData,
+                ambientesData,
+                instructoresData,
+                programasData,
+                nivelesData,
+                proyectosData,
+            ] = await Promise.all([
+                obtenerPeriodos(),
+                obtenerHorarios(),
+                obtenerFichas(),
+                obtenerUsuarios(),
+                obtenerAmbientes(),
+                obtenerInstructores(),
+                obtenerProgramas(),
+                obtenerNivelesFormacion(),
+                obtenerProyectos(),
+            ]);
+
+            setPeriodos(periodosData);
+            setHorarios(horariosData);
+            setFichas(fichasData);
+            setUsuarios(usuariosData);
+            setAmbientes(ambientesData);
+            setInstructores(instructoresData);
+            setProgramas(programasData);
+            setNiveles(nivelesData);
+            setProyectos(proyectosData);
         } catch (error) {
-            console.error('Error al cargar horarios:', error);
+            console.error('Error al cargar datos iniciales:', error);
         }
     };
 
-    const cargarUsuarios = async () => {
-        try {
-            const data = await obtenerUsuarios();
-            setUsuarios(data);
-        } catch (error) {
-            console.error('Error al obtener los usuarios:', error);
-        }
-    };
-
-    const cargarInstructores = async () => {
-        try {
-            const data = await obtenerInstructores();
-            setInstructores(data);
-        } catch (error) {
-            console.error('Error al obtener los instructores:', error);
-        }
-    };
-
-    const cargarAmbientes = async () => {
-        try {
-            const data = await obtenerAmbientes();
-            setAmbientes(data);
-        } catch (error) {
-            console.error('Error al obtener los ambientes:', error);
-        }
-    };
-
-    const cargarPeriodos = async () => {
-        try {
-            const data = await obtenerPeriodos();
-            setPeriodos(data);
-        } catch (error) {
-            console.error('Error al obtener los periodos:', error);
-        }
-    };
-
-    const cargarProgramas = async () => {
-        try {
-            const data = await obtenerProgramas(); // Asegúrate de tener un servicio que obtenga los programas
-            setProgramas(data);
-        } catch (error) {
-            console.error('Error al obtener los programas:', error);
-        }
-    };
-
-    const cargarNiveles = async () => {
-        try {
-            const data = await obtenerNivelesFormacion();
-            setNiveles(data);
-        } catch (error) {
-            console.error('Error al obtener los niveles:', error);
-        }
-    };
-
-    const cargarFichas = async () => {
-        try {
-            const data = await obtenerFichas();
-            setFichas(data);
-        } catch (error) {
-            console.error('Error al obtener los fichas:', error);
-        }
-    };
-
-    const cargarProyectos = async () => {
-        try {
-            const data = await obtenerProyectos();
-            setProyectos(data);
-        } catch (error) {
-            console.error('Error al obtener los fichas:', error);
-        }
-    };
     const handleFichaChange = (e) => {
         const fichaId = e.target.value;
         setFormData({ ...formData, ficha_id: fichaId });
-    
-        // Buscar la ficha seleccionada
+
         const ficha = fichas.find(f => f.id === parseInt(fichaId));
         if (ficha) {
-            // Establecer valores seleccionados
             setFechaInicioSeleccionado(ficha.fecha_inicio || '');
             setFechaFinSeleccionado(ficha.fecha_fin || '');
             setFinLectivaSeleccionado(ficha.fin_lectiva || '');
-    
-            // Buscar el proyecto relacionado
+
             const proyecto = proyectos.find(p => p.id === ficha.proyecto_id);
             if (proyecto) {
                 setProyectoSeleccionado(proyecto.nombre);
-    
-                // Buscar la jornada técnica dentro del proyecto
-                setJornadaTecnicaSeleccionado(proyecto.jornada_tecncia || '');
-    
-                // Buscar el programa relacionado
+                setJornadaTecnicaSeleccionado(proyecto.jornada_tecnica || '');
+
                 const programa = programas.find(p => p.id === ficha.programa_id);
                 if (programa) {
                     setProgramaSeleccionado(programa.nombre);
-    
-                    // Buscar el nivel de formación del programa
                     const nivel = niveles.find(n => n.id === programa.nivel_formacion_id);
                     setNivelSeleccionado(nivel ? nivel.nombre : '');
                 } else {
@@ -219,7 +146,6 @@ const Horario = () => {
                 setNivelSeleccionado('');
             }
         } else {
-            // Resetear valores si no hay ficha seleccionada
             setFechaInicioSeleccionado('');
             setFechaFinSeleccionado('');
             setFinLectivaSeleccionado('');
@@ -229,49 +155,39 @@ const Horario = () => {
             setNivelSeleccionado('');
         }
     };
-    
+
     const handleChange = (e) => {
         const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
 
-        setFormData((formData) => {
-            const newData = {
-                ...formData,
-                [name]: value,
-            };
-
-            // Si el campo es instructor_id, mostrar los campos adicionales
-            if (name === 'instructor_id' && value) {
-                setMostrarHorario(true);
+        if (name === 'fecha_inicio_hora_ingreso' || name === 'fecha_fin_hora_egreso') {
+            const inicio = new Date(formData.fecha_inicio_hora_ingreso);
+            const fin = new Date(formData.fecha_fin_hora_egreso);
+            if (!isNaN(inicio.getTime()) && !isNaN(fin.getTime())) {
+                const diferenciaHoras = (fin - inicio) / (1000 * 60 * 60);
+                setFormData((prev) => ({
+                    ...prev,
+                    horas: diferenciaHoras > 0 ? Math.floor(diferenciaHoras) : 0,
+                }));
             }
-
-            if (name === 'fecha_inicio_hora_ingreso' || name === 'fecha_fin_hora_egreso') {
-                const inicio = new Date(newData.fecha_inicio_hora_ingreso);
-                const fin = new Date(newData.fecha_fin_hora_egreso);
-
-                if (!isNaN(inicio.getTime()) && !isNaN(fin.getTime())) {
-                    const diferenciaHoras = (fin - inicio) / (1000 * 60 * 60);
-                    newData.horas = diferenciaHoras > 0 ? Math.floor(diferenciaHoras) : 0; // Redondea hacia abajo
-                }
-            }
-            return newData;
-        });
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const data = { ...formData };
-        console.log("Datos enviados:", formData);
-
         try {
             if (editando) {
-                await actualizarHorario(idEditar, data);
+                await actualizarHorario(idEditar, formData);
                 Swal.fire('Actualizado', 'Horario actualizado exitosamente', 'success');
             } else {
-                await crearHorario(data);
+                await crearHorario(formData);
                 Swal.fire('Creado', 'Horario creado exitosamente', 'success');
             }
             resetFormulario();
-            cargarHorarios();
+            cargarDatosIniciales();
         } catch (error) {
             console.error('Error:', error);
             Swal.fire('Error', 'Ocurrió un problema', 'error');
@@ -289,7 +205,6 @@ const Horario = () => {
             fecha_inicio_hora_ingreso: '',
             fecha_fin_hora_egreso: '',
             horas: 0,
-            validacion: '',
             observaciones: '',
             dia: '',
             estado: true,
@@ -302,6 +217,7 @@ const Horario = () => {
     const handleEditar = (horario) => {
         setFormData({
             ...horario,
+            dia: horario.dia || '',
             fecha_inicio_hora_ingreso: horario.fecha_inicio_hora_ingreso
                 ? new Date(horario.fecha_inicio_hora_ingreso).toISOString().slice(0, 16)
                 : '',
@@ -309,10 +225,41 @@ const Horario = () => {
                 ? new Date(horario.fecha_fin_hora_egreso).toISOString().slice(0, 16)
                 : '',
         });
+    
+        // Buscar la ficha correspondiente y actualizar sus valores
+        const ficha = fichas.find(f => f.id === horario.ficha_id);
+        if (ficha) {
+            setFechaInicioSeleccionado(ficha.fecha_inicio || '');
+            setFechaFinSeleccionado(ficha.fecha_fin || '');
+            setFinLectivaSeleccionado(ficha.fin_lectiva || '');
+    
+            const proyecto = proyectos.find(p => p.id === ficha.proyecto_id);
+            if (proyecto) {
+                setProyectoSeleccionado(proyecto.nombre);
+                setJornadaTecnicaSeleccionado(proyecto.jornada_tecnica || '');
+    
+                const programa = programas.find(p => p.id === ficha.programa_id);
+                if (programa) {
+                    setProgramaSeleccionado(programa.nombre);
+                    const nivel = niveles.find(n => n.id === programa.nivel_formacion_id);
+                    setNivelSeleccionado(nivel ? nivel.nombre : '');
+                } else {
+                    setProgramaSeleccionado('');
+                    setNivelSeleccionado('');
+                }
+            } else {
+                setProyectoSeleccionado('');
+                setJornadaTecnicaSeleccionado('');
+                setProgramaSeleccionado('');
+                setNivelSeleccionado('');
+            }
+        }
+    
         setEditando(true);
         setIdEditar(horario.id);
         setModalAbierto(true);
     };
+    
 
     const handleEliminar = async (id) => {
         const resultado = await Swal.fire({
@@ -328,7 +275,7 @@ const Horario = () => {
             try {
                 await eliminarHorario(id);
                 Swal.fire('Eliminado', 'Horario eliminado exitosamente', 'success');
-                cargarHorarios();
+                cargarDatosIniciales();
             } catch (error) {
                 console.error('Error al eliminar el horario:', error);
                 Swal.fire('Error', 'No se pudo eliminar el horario', 'error');
@@ -409,7 +356,9 @@ const Horario = () => {
                                     <label>Fecha Fin:</label>
                                     <input type="date" value={fechaFinSeleccionado} onChange={(e) => setFechaFinSeleccionado(e.target.value)} className="input" />
                                 </div>
+                                </div>
 
+                                <div className="fila">
                                 <div className="campo">
                                     <label>Fin Lectiva:</label>
                                     <input type="date" value={finlectivaSeleccionado} onChange={(e) => setFinLectivaSeleccionado(e.target.value)} className="input" />
@@ -419,10 +368,8 @@ const Horario = () => {
                                     <label>Jornada Técnica:</label>
                                     <input type="text" value={jornadaTecnicaSeleccionado} readOnly className="input" />
                                 </div>
-                            </div>
 
-
-                            <div className="fila">
+                   
                                 <div className="campo">
                                     <label>Periodo:</label>
                                     <select name="periodo_id" value={formData.periodo_id} onChange={handleChange} required className="input">
@@ -436,9 +383,9 @@ const Horario = () => {
                                 </div>
 
                                 <div className="campo">
-                                    <label>Día:</label>
+                                    <label>Día de la semanda:</label>
                                     <select name="dia" value={formData.dia} onChange={handleChange} required className="input">
-                                        <option value="">Seleccione un día</option>
+                                        <option value="">Seleccione un día de la semana</option>
                                         <option value="Lunes">Lunes</option>
                                         <option value="Martes">Martes</option>
                                         <option value="Miércoles">Miércoles</option>

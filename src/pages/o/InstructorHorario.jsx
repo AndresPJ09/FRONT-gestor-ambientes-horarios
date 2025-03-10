@@ -32,7 +32,8 @@ const InstructorHorario = () => {
     const cargarInstructoresHorarios = async () => {
         try {
             const data = await obtenerHorariosInstructores();
-            setInstructorHorarios(data);
+            console.log("Datos recibidos:", data); 
+            setInstructorHorarios(data || []);
         } catch (error) {
             console.error("Error al obtener los horarios de instructores:", error);
         }

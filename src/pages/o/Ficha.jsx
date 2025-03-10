@@ -25,14 +25,14 @@ const Ficha = () => {
     const abrirModalCrear = () => {
         setEditando(false);
         setFormData({
-            codigo: '', 
-            programa_id: 0, 
-            proyecto_id: 0, 
-            fecha_inicio: '', 
-            fecha_fin: '', 
-            fin_lectiva: '', 
-            numero_semanas: '', 
-            cupo: 0, 
+            codigo: '',
+            programa_id: 0,
+            proyecto_id: 0,
+            fecha_inicio: '',
+            fecha_fin: '',
+            fin_lectiva: '',
+            numero_semanas: '',
+            cupo: 0,
             estado: true
         });
         setEditando(false);
@@ -65,7 +65,7 @@ const Ficha = () => {
     const cargarProgramas = async () => {
         try {
             const data = await obtenerProgramas();
-            console.log("Programas cargados:", data); 
+            console.log("Programas cargados:", data);
             setProgramas(data);
         } catch (error) {
             console.error('Error al cargar programas:', error);
@@ -75,7 +75,7 @@ const Ficha = () => {
     const cargarProyectos = async () => {
         try {
             const data = await obtenerProyectos();
-            console.log("Proyectos cargados:", data); 
+            console.log("Proyectos cargados:", data);
             setProyectos(data);
         } catch (error) {
             console.error('Error al cargar proyectos:', error);
@@ -123,14 +123,14 @@ const Ficha = () => {
 
     const resetFormulario = () => {
         setFormData({
-            codigo: '', 
-            programa_id: 0, 
-            proyecto_id: 0, 
-            fecha_inicio: '', 
-            fecha_fin: '', 
-            fin_lectiva: '', 
-            numero_semanas: 0, 
-            cupo: 0, 
+            codigo: '',
+            programa_id: 0,
+            proyecto_id: 0,
+            fecha_inicio: '',
+            fecha_fin: '',
+            fin_lectiva: '',
+            numero_semanas: 0,
+            cupo: 0,
             estado: true,
         });
         setEditando(false);
@@ -176,7 +176,7 @@ const Ficha = () => {
 
             {modalAbierto && (
                 <div className="modal-overlay">
-                    <div className="modal">
+                    <div className="modal2">
                         <h2 className="modal-titulo">
                             {editando ? 'Editar ficha' : 'Crear ficha'}
                         </h2>
@@ -210,26 +210,28 @@ const Ficha = () => {
                                         ))}
                                     </select>
                                 </div>
-
-                                <div className="campo">
-                                    <label htmlFor="fecha_inicio">Fecha de inicio:</label>
-                                    <input type="date" id="fecha_inicio" name="fecha_inicio" value={formData.fecha_inicio} onChange={handleChange} required className="input" />
-                                </div>
                             </div>
 
                             <div className="fila">
                                 <div className="campo">
+                                    <label htmlFor="fecha_inicio">Fecha de inicio:</label>
+                                    <input type="date" id="fecha_inicio" name="fecha_inicio" value={formData.fecha_inicio} onChange={handleChange} required className="input" />
+                                </div>
+
+
+
+                                <div className="campo">
                                     <label htmlFor="fecha_fin">Fecha de fin:</label>
                                     <input type="date" id="fecha_fin" name="fecha_fin" value={formData.fecha_fin} onChange={handleChange} required className="input" />
                                 </div>
-                                
+
                                 <div className="campo">
                                     <label htmlFor="fin_lectiva">Fin de lectiva:</label>
                                     <input type="date" id="fin_lectiva" name="fin_lectiva" value={formData.fin_lectiva} onChange={handleChange} required className="input" />
                                 </div>
-                                </div>
+                            </div>
 
-                                <div className="fila">
+                            <div className="fila">
                                 <div className="campo">
                                     <label htmlFor="numero_semanas">Número de semanas:</label>
                                     <input
@@ -256,9 +258,9 @@ const Ficha = () => {
                                     />
 
                                 </div>
-                                
+
                                 {editando && (
-                                    
+
                                     <div className="campo">
                                         <label htmlFor="estado">Estado:</label>
                                         <select id="estado" name="estado" value={formData.estado} onChange={handleChange} required className="input">

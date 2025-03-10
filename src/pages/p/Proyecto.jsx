@@ -142,11 +142,11 @@ const Proyecto = () => {
                             </div>
 
                             <div className="campo">
-                                <label htmlFor="jornada_tecncia">Jornada Técnica:</label>
+                                <label htmlFor="jornada_tecnica">Jornada Técnica:</label>
                                 <select
-                                    id="jornada_tecncia"
-                                    name="jornada_tecncia"
-                                    value={formData.jornada_tecncia}
+                                    id="jornada_tecnica"
+                                    name="jornada_tecnica"
+                                    value={formData.jornada_tecnica}
                                     onChange={handleChange}
                                     required
                                     className="input"
@@ -206,7 +206,7 @@ const Proyecto = () => {
                     {proyectos.map((proyecto) => (
                         <tr key={proyecto.id} className="tr">
                             <td className="td">{proyecto.nombre}</td>
-                            <td className="td">{proyecto.jornada_tecncia}</td>
+                            <td className="td">{proyecto.jornada_tecnica}</td>
                             <td className="td">{proyecto.estado ? 'Activo' : 'Inactivo'}</td>
                             <td className="td">
                                 <button
