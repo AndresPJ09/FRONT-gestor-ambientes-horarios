@@ -300,8 +300,8 @@ const Ficha = () => {
                     {fichas.map((ficha) => (
                         <tr key={ficha.id} className="tr">
                             <td className="td">{ficha.codigo}</td>
-                            <td className="td">{programas.find(proy => proy.id === ficha.programa_id)?.nombre || "No asignado"}</td>
-                            <td className="td">{proyectos.find(prog => prog.id === ficha.proyecto_id)?.nombre || "No asignado"}</td>
+                            <td className="td">{programas.find(prog => prog.id === ficha.programa_id)?.nombre || "No asignado"}</td>
+                            <td className="td">{proyectos.find(proy => proy.id === ficha.proyecto_id)?.nombre || "No asignado"}</td>
                             <td className="td">{ficha.fecha_inicio}</td>
                             <td className="td">{ficha.fecha_fin}</td>
                             <td className="td">{ficha.fin_lectiva}</td>

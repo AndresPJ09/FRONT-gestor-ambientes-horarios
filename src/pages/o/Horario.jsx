@@ -8,6 +8,7 @@ import { obtenerInstructores } from '../../services/InstructorService';
 import { obtenerProgramas } from '../../services/ProgramaService';
 import { obtenerNivelesFormacion } from '../../services/NivelFormacionService';
 import { obtenerProyectos } from '../../services/ProyectoService';
+import { obtenerFases } from '../../services/FaseService';
 import {
     crearHorario,
     actualizarHorario,
@@ -48,6 +49,14 @@ const Horario = () => {
             observaciones: '',
             estado: true,
         });
+        setProgramaSeleccionado('');
+        setNivelSeleccionado('');
+        setProyectoSeleccionado('');
+        setJornadaTecnicaSeleccionado('');
+        setFechaInicioSeleccionado('');
+        setFechaFinSeleccionado('');
+        setFinLectivaSeleccionado('');
+        setFaseSeleccionada('');
         setEditando(false);
         setIdEditar(null);
         setModalAbierto(true);
@@ -72,6 +81,8 @@ const Horario = () => {
     const [fechaFinSeleccionado, setFechaFinSeleccionado] = useState('');
     const [finlectivaSeleccionado, setFinLectivaSeleccionado] = useState('');
     const [jornadaTecnicaSeleccionado, setJornadaTecnicaSeleccionado] = useState('');
+    const [fases, setFases] = useState([]);
+    const [faseSeleccionada, setFaseSeleccionada] = useState('');
 
     useEffect(() => {
         cargarDatosIniciales();
@@ -89,6 +100,7 @@ const Horario = () => {
                 programasData,
                 nivelesData,
                 proyectosData,
+                fasesData
             ] = await Promise.all([
                 obtenerPeriodos(),
                 obtenerHorarios(),
@@ -99,6 +111,8 @@ const Horario = () => {
                 obtenerProgramas(),
                 obtenerNivelesFormacion(),
                 obtenerProyectos(),
+                obtenerFases()
+
             ]);
 
             setPeriodos(periodosData);
@@ -110,6 +124,7 @@ const Horario = () => {
             setProgramas(programasData);
             setNiveles(nivelesData);
             setProyectos(proyectosData);
+            setFases(fasesData);
         } catch (error) {
             console.error('Error al cargar datos iniciales:', error);
         }
@@ -209,12 +224,22 @@ const Horario = () => {
             dia: '',
             estado: true,
         });
+
+        setProgramaSeleccionado('');
+        setNivelSeleccionado('');
+        setProyectoSeleccionado('');
+        setJornadaTecnicaSeleccionado('');
+        setFechaInicioSeleccionado('');
+        setFechaFinSeleccionado('');
+        setFinLectivaSeleccionado('');
+        setFaseSeleccionada('');
         setEditando(false);
         setIdEditar(null);
         setModalAbierto(false);
     };
 
     const handleEditar = (horario) => {
+        console.log("Datos del horario recibido para editar:", horario);
         setFormData({
             ...horario,
             dia: horario.dia || '',
@@ -225,19 +250,19 @@ const Horario = () => {
                 ? new Date(horario.fecha_fin_hora_egreso).toISOString().slice(0, 16)
                 : '',
         });
-    
+
         // Buscar la ficha correspondiente y actualizar sus valores
         const ficha = fichas.find(f => f.id === horario.ficha_id);
         if (ficha) {
             setFechaInicioSeleccionado(ficha.fecha_inicio || '');
             setFechaFinSeleccionado(ficha.fecha_fin || '');
             setFinLectivaSeleccionado(ficha.fin_lectiva || '');
-    
+
             const proyecto = proyectos.find(p => p.id === ficha.proyecto_id);
             if (proyecto) {
                 setProyectoSeleccionado(proyecto.nombre);
                 setJornadaTecnicaSeleccionado(proyecto.jornada_tecnica || '');
-    
+
                 const programa = programas.find(p => p.id === ficha.programa_id);
                 if (programa) {
                     setProgramaSeleccionado(programa.nombre);
@@ -254,12 +279,12 @@ const Horario = () => {
                 setNivelSeleccionado('');
             }
         }
-    
+
         setEditando(true);
         setIdEditar(horario.id);
         setModalAbierto(true);
     };
-    
+
 
     const handleEliminar = async (id) => {
         const resultado = await Swal.fire({
@@ -356,20 +381,26 @@ const Horario = () => {
                                     <label>Fecha Fin:</label>
                                     <input type="date" value={fechaFinSeleccionado} onChange={(e) => setFechaFinSeleccionado(e.target.value)} className="input" />
                                 </div>
-                                </div>
+                            </div>
 
-                                <div className="fila">
+                            <div className="fila">
                                 <div className="campo">
                                     <label>Fin Lectiva:</label>
                                     <input type="date" value={finlectivaSeleccionado} onChange={(e) => setFinLectivaSeleccionado(e.target.value)} className="input" />
                                 </div>
 
-                            <div className="campo">
+                                <div className="campo">
                                     <label>Jornada Técnica:</label>
                                     <input type="text" value={jornadaTecnicaSeleccionado} readOnly className="input" />
                                 </div>
 
-                   
+
+                                <div className="campo">
+                                    <label>Fase:</label>
+                                    <input type="text" value={faseSeleccionada} readOnly className="input" />
+                                </div>
+
+
                                 <div className="campo">
                                     <label>Periodo:</label>
                                     <select name="periodo_id" value={formData.periodo_id} onChange={handleChange} required className="input">

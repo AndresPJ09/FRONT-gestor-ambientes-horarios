@@ -13,6 +13,11 @@ import Proyecto from './pages/p/Proyecto';
 import Ficha from './pages/o/Ficha';
 import Horario from './pages/o/Horario';
 import InstructorHorario from './pages/o/InstructorHorario';
+import Actividad from './pages/o/Actividad';
+import ProyectoFase from './pages/o/ProyectoFase';
+import ActividadFase from './pages/o/ActividadFase';
+import ConsolidadoFicha from './pages/o/ConsolidadoFicha';
+import ConsolidadoAmbiente from './pages/o/ConsolidadoAmbiente';
 
 
 const AppRoutes = () => {
@@ -33,6 +38,11 @@ const AppRoutes = () => {
         <Route path="/ficha" element={<Ficha />} />
         <Route path="/horario" element={<Horario />} />
         <Route path="/instructorhorario" element={< InstructorHorario/>} />
+        <Route path="/proyectofase" element={< ProyectoFase/>} />
+        <Route path="/actividad" element={< Actividad/>} />
+        <Route path="/actividadfase" element={< ActividadFase/>} />
+        <Route path="/consolidadoambiente" element={< ConsolidadoAmbiente/>} />
+        <Route path="/consolidadohorario" element={< ConsolidadoFicha/>} />
       </Routes>
     </Router>
   );
