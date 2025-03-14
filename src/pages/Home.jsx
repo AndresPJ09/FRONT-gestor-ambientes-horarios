@@ -17,12 +17,12 @@ const Home = () => {
         <Link to="/actividad">Actividad</Link>
         <Link to="/proyectofase">Proyecto fase</Link>
         <Link to="/actividadfase">Actividad fase</Link>
-        <Link to="/resultado-aprendizaje">Resultado Aprendizaje</Link>
+        <Link to="/resultadoaprendizaje">Resultado Aprendizaje</Link>
         <Link to="/ficha">Ficha</Link>
         <Link to="/horario">Horario</Link>
         <Link to="/instructorhorario">Horario de instructores</Link>
-        <Link to="/consolidado-ambiente">Consolidado Ambiente</Link>
-        <Link to="/consolidado-ambiente">Consolidado Fichas</Link>
+        <Link to="/consolidadoambiente">Consolidado Ambiente</Link>
+        <Link to="/consolidadoficha">Consolidado Fichas</Link>
       </nav>
 
       <p>Hola, bienvenido</p>

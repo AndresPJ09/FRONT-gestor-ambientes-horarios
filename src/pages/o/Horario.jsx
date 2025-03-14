@@ -173,22 +173,30 @@ const Horario = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-
-        if (name === 'fecha_inicio_hora_ingreso' || name === 'fecha_fin_hora_egreso') {
-            const inicio = new Date(formData.fecha_inicio_hora_ingreso);
-            const fin = new Date(formData.fecha_fin_hora_egreso);
-            if (!isNaN(inicio.getTime()) && !isNaN(fin.getTime())) {
-                const diferenciaHoras = (fin - inicio) / (1000 * 60 * 60);
-                setFormData((prev) => ({
-                    ...prev,
-                    horas: diferenciaHoras > 0 ? Math.floor(diferenciaHoras) : 0,
-                }));
+    
+        // Actualizar el estado de formData
+        setFormData((prev) => {
+            const newFormData = {
+                ...prev,
+                [name]: value,
+            };
+    
+            // Calcular la diferencia de horas si los campos de fecha están cambiados
+            if (name === 'fecha_inicio_hora_ingreso' || name === 'fecha_fin_hora_egreso') {
+                const inicio = new Date(newFormData.fecha_inicio_hora_ingreso);
+                const fin = new Date(newFormData.fecha_fin_hora_egreso);
+    
+                if (!isNaN(inicio.getTime()) && !isNaN(fin.getTime())) {
+                    const diferenciaMilisegundos = fin - inicio;
+                    const diferenciaHoras = diferenciaMilisegundos / (1000 * 60 * 60); // Convertir a horas
+                    newFormData.horas = Math.max(0, Math.floor(diferenciaHoras)); // Asegurar que sea un número entero positivo
+                } else {
+                    newFormData.horas = 0; // Si las fechas no son válidas, establecer las horas en 0
+                }
             }
-        }
+    
+            return newFormData;
+        });
     };
 
     const handleSubmit = async (e) => {
@@ -242,7 +250,6 @@ const Horario = () => {
         console.log("Datos del horario recibido para editar:", horario);
         setFormData({
             ...horario,
-            dia: horario.dia || '',
             fecha_inicio_hora_ingreso: horario.fecha_inicio_hora_ingreso
                 ? new Date(horario.fecha_inicio_hora_ingreso).toISOString().slice(0, 16)
                 : '',
@@ -412,7 +419,9 @@ const Horario = () => {
                                         ))}
                                     </select>
                                 </div>
+                                </div>
 
+                                <div className="fila">
                                 <div className="campo">
                                     <label>Día de la semanda:</label>
                                     <select name="dia" value={formData.dia} onChange={handleChange} required className="input">
@@ -426,9 +435,7 @@ const Horario = () => {
                                         <option value="Domingo">Domingo</option>
                                     </select>
                                 </div>
-                            </div>
 
-                            <div className="fila">
                                 <div className="campo">
                                     <label>Jornada Programada:</label>
                                     <select name="jornada_programada" value={formData.jornada_programada} onChange={handleChange} required className="input">

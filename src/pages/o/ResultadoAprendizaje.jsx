@@ -19,9 +19,9 @@ const ResultadoAprendizaje = () => {
     // Función para abrir el modal en modo creación
     const abrirModalCrear = () => {
         setFormData({
-            codigo: '',
-            nombre: '',
             descripcion: '',
+            competencia_id: 0,
+            est_ideal_evaluacion: '',
             estado: true,
         });
         setEditando(false);
@@ -138,6 +138,7 @@ const ResultadoAprendizaje = () => {
                     <div className="modal">
                         <h2 className="modal-titulo">{editando ? 'Editar Resultado' : 'Crear Resultado'}</h2>
                         <form onSubmit={handleSubmit} className="formulario">
+
                             <div className="fila">
                                 <div className="campo">
                                     <label htmlFor="descripcion">Descripción:</label>
@@ -153,7 +154,6 @@ const ResultadoAprendizaje = () => {
                                 </div>
                             </div>
 
-                            <div className="fila">
                                 <div className="campo">
                                     <label htmlFor="competencia_id">Competencia:</label>
                                     <select
@@ -167,12 +167,13 @@ const ResultadoAprendizaje = () => {
                                         <option value="">Seleccione...</option>
                                         {competencias.map((comp) => (
                                             <option key={comp.id} value={comp.id}>
-                                                {comp.nombre}
+                                                {comp.descripcion}
                                             </option>
                                         ))}
                                     </select>
                                 </div>
 
+                                <div className="fila">
                                 <div className="campo">
                                     <label htmlFor="est_ideal_evaluacion">Evaluación ideal:</label>
                                     <select
@@ -188,10 +189,8 @@ const ResultadoAprendizaje = () => {
                                         <option value="En ejecución">En ejecución</option>
                                     </select>
                                 </div>
-                            </div>
 
                             {editando && (
-                                <div className="fila">
                                     <div className="campo">
                                         <label htmlFor="estado">Estado:</label>
                                         <select
@@ -206,8 +205,8 @@ const ResultadoAprendizaje = () => {
                                             <option value={false}>Inactivo</option>
                                         </select>
                                     </div>
-                                </div>
                             )}
+                              </div>
 
                             <div className="botones">
                                 <button className="boton-cancelar" type="button" onClick={() => setModalAbierto(false)}>
@@ -238,7 +237,7 @@ const ResultadoAprendizaje = () => {
                         <tr key={resultado.id} className="tr">
                             <td className="td">{resultado.descripcion}</td>
                             <td className="td">
-                                {competencias.find((c) => c.id === resultado.competencia_id)?.nombre || 'No asignado'}
+                                {competencias.find((c) => c.id === resultado.competencia_id)?.descripcion || 'No asignado'}
                             </td>
                             <td className="td">{resultado.est_ideal_evaluacion}</td>
                             <td className="td">{resultado.estado ? 'Activo' : 'Inactivo'}</td>

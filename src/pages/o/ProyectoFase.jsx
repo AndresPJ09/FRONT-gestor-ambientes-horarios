@@ -63,10 +63,10 @@ const ProyectoFase = () => {
   const cargarFases = async () => {
     try {
       const data = await obtenerFases();
-      console.log("Proyectos cargados:", data);
+      console.log("Fases cargados:", data);
       setFases(data);
     } catch (error) {
-      console.error('Error al cargar proyectos:', error);
+      console.error('Error al cargar fases:', error);
     }
   };
 
@@ -199,7 +199,7 @@ const ProyectoFase = () => {
           {proyectofases.map((proyectofase) => (
             <tr key={proyectofase.id} className="tr">
               <td className="td">{proyectos.find(proy => proy.id === proyectofase.proyecto_id)?.nombre || "No asignado"}</td>
-              <td className="td">{fases.find(proy => proy.id === proyectofase.fase_id)?.descripcion || "No asignado"}</td>
+              <td className="td">{fases.find(fas => fas.id === proyectofase.fase_id)?.descripcion || "No asignado"}</td>
               <td className="td">
                 <button
                   onClick={() => handleEditar(proyectofase)}
@@ -220,10 +220,6 @@ const ProyectoFase = () => {
       </table>
     </div >
   );
-
-
-
-
 };
 
 export default ProyectoFase;

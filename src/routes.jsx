@@ -7,7 +7,6 @@ import TipoVinculo from './pages/p/Tipovinculo';
 import NivelFormacion from './pages/p/Nivelformacion';
 import Programa from './pages/o/Programa';
 import Competencia from './pages/o/Competencia';
-import ResultadoAprendizaje from './pages/o/ResultadoAprendizaje';
 import Fase from './pages/p/Fase';
 import Proyecto from './pages/p/Proyecto';
 import Ficha from './pages/o/Ficha';
@@ -18,6 +17,7 @@ import ProyectoFase from './pages/o/ProyectoFase';
 import ActividadFase from './pages/o/ActividadFase';
 import ConsolidadoFicha from './pages/o/ConsolidadoFicha';
 import ConsolidadoAmbiente from './pages/o/ConsolidadoAmbiente';
+import ResultadoAprendizaje from './pages/o/ResultadoAprendizaje';
 
 
 const AppRoutes = () => {
@@ -32,7 +32,7 @@ const AppRoutes = () => {
         <Route path="/tipovinculo" element={<TipoVinculo />} /> 
         <Route path="/programa" element={<Programa />} /> 
         <Route path="/competencia" element={<Competencia />} /> 
-        <Route path="/resultadoaprendizaje" element={<ResultadoAprendizaje />} />
+        <Route path="/resultadoaprendizaje" element={< ResultadoAprendizaje/>} />
         <Route path="/fase" element={<Fase />} />
         <Route path="/proyecto" element={<Proyecto />} />
         <Route path="/ficha" element={<Ficha />} />
