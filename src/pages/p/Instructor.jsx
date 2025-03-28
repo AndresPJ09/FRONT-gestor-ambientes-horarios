@@ -33,6 +33,7 @@ const Instructor = () => {
       nombres: '',
       apellidos: '',
       foto: null,
+      fotoPreview: null,
       identificacion: '',
       tipo_vinculacion_id: 0,
       especialidad: '',
@@ -90,31 +91,31 @@ const Instructor = () => {
     });
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0]; // Obtener el archivo seleccionado
+const handleFileChange = (e) => {
+  const file = e.target.files[0];
 
-    if (file && (file.type === "image/png" || file.type === "image/jpeg")) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result.split(",")[1]; // Quitar el prefijo "data:image/png;base64,"
-        setFormData({
-          ...formData,
-          foto: base64String, // Guardamos la imagen en Base64
-          fotoPreview: URL.createObjectURL(file) // Vista previa
-        });
-      };
-
-      reader.readAsDataURL(file); // Convertir a Base64
-    } else {
-      alert("Solo se permiten archivos PNG y JPG");
-      e.target.value = ""; // Limpiar el input de archivo
-    }
-  };
+  if (file && (file.type === "image/png" || file.type === "image/jpeg")) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result.split(",")[1];
+      setFormData({
+        ...formData,
+        foto: base64String,
+        fotoPreview: URL.createObjectURL(file),
+       
+      });
+    };
+    reader.readAsDataURL(file);
+  } else {
+    alert("Solo se permiten archivos PNG y JPG");
+    e.target.value = "";
+  }
+};
 
   // Manejar el envío del formulario (crear o actualizar)
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const data = { ...formData };
     try {
       if (editando) {
@@ -137,10 +138,19 @@ const Instructor = () => {
   // Función para restablecer el formulario
   const resetFormulario = () => {
     setFormData({
-      nombres: '', apellidos: '', foto: null, identificacion: '',
-      tipo_vinculacion_id: 0, especialidad: '', correo: '',
-      fecha_inicio: '', fecha_finalizacion: '',
-      hora_ingreso: '', hora_egreso: '', horas_asignadas: 0,
+      nombres: '', 
+      apellidos: '', 
+      foto: null, 
+      fotoPreview: null, 
+      identificacion: '',
+      tipo_vinculacion_id: 0, 
+      especialidad: '', 
+      correo: '',
+      fecha_inicio: '', 
+      fecha_finalizacion: '',
+      hora_ingreso: '', 
+      hora_egreso: '', 
+      horas_asignadas: 0,
       estado: true,
     });
     setEditando(false);
@@ -159,36 +169,42 @@ const Instructor = () => {
     setModalAbierto(true);
   };
 
-  // Función para eliminar un instructor con confirmación
-  const handleEliminar = async (id) => {
-    const resultado = await Swal.fire({
-      title: '¿Estás seguro?',
-      text: 'Esta acción no se puede deshacer',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar',
-    });
-
-    if (resultado.isConfirmed) {
-      try {
-        await eliminarInstructor(id);
-        Swal.fire('Eliminado', 'Instructor eliminado exitosamente', 'success');
-        cargarInstructores();
-      } catch (error) {
-        console.error('Error al eliminar el instructor:', error);
-        Swal.fire('Error', 'No se pudo eliminar el instructor', 'error');
-      }
-    }
-  };
 
   const handleEliminarImagen = () => {
+    // Limpiar input file
+    const fileInput = document.getElementById('foto');
+    if (fileInput) fileInput.value = '';
+    
     setFormData({
       ...formData,
       foto: null,
       fotoPreview: null,
+      fotoFile: ''
     });
   };
+
+    // Función para eliminar un instructor con confirmación
+    const handleEliminar = async (id) => {
+      const resultado = await Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Esta acción no se puede deshacer',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+      });
+  
+      if (resultado.isConfirmed) {
+        try {
+          await eliminarInstructor(id);
+          Swal.fire('Eliminado', 'Instructor eliminado exitosamente', 'success');
+          cargarInstructores();
+        } catch (error) {
+          console.error('Error al eliminar el instructor:', error);
+          Swal.fire('Error', 'No se pudo eliminar el instructor', 'error');
+        }
+      }
+    };
 
   return (
     <div className="container">
