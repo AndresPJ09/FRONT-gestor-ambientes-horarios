@@ -9,6 +9,7 @@ import { obtenerProgramas } from '../../services/ProgramaService';
 import { obtenerNivelesFormacion } from '../../services/NivelFormacionService';
 import { obtenerProyectos } from '../../services/ProyectoService';
 import { obtenerFases } from '../../services/FaseService';
+import { obtenerProyectoFases } from '../../services/ProyectoFaseService';
 import {
     crearHorario,
     actualizarHorario,
@@ -74,6 +75,8 @@ const Horario = () => {
     const [programas, setProgramas] = useState([]);
     const [proyectos, setProyectos] = useState([]);
     const [niveles, setNiveles] = useState([]);
+    const [fases, setFases] = useState([]);
+    const [proyectofases, setProyectoFase] = useState([]);
     const [programaSeleccionado, setProgramaSeleccionado] = useState('');
     const [proyectoSeleccionado, setProyectoSeleccionado] = useState('');
     const [nivelSeleccionado, setNivelSeleccionado] = useState('');
@@ -81,7 +84,6 @@ const Horario = () => {
     const [fechaFinSeleccionado, setFechaFinSeleccionado] = useState('');
     const [finlectivaSeleccionado, setFinLectivaSeleccionado] = useState('');
     const [jornadaTecnicaSeleccionado, setJornadaTecnicaSeleccionado] = useState('');
-    const [fases, setFases] = useState([]);
     const [faseSeleccionada, setFaseSeleccionada] = useState('');
 
     useEffect(() => {
@@ -100,7 +102,8 @@ const Horario = () => {
                 programasData,
                 nivelesData,
                 proyectosData,
-                fasesData
+                fasesData,
+                proyectofasesData
             ] = await Promise.all([
                 obtenerPeriodos(),
                 obtenerHorarios(),
@@ -111,10 +114,9 @@ const Horario = () => {
                 obtenerProgramas(),
                 obtenerNivelesFormacion(),
                 obtenerProyectos(),
-                obtenerFases()
-
+                obtenerFases(),
+                obtenerProyectoFases()
             ]);
-
             setPeriodos(periodosData);
             setHorarios(horariosData);
             setFichas(fichasData);
@@ -125,6 +127,7 @@ const Horario = () => {
             setNiveles(nivelesData);
             setProyectos(proyectosData);
             setFases(fasesData);
+            setProyectoFases(proyectofasesData)
         } catch (error) {
             console.error('Error al cargar datos iniciales:', error);
         }
@@ -173,19 +176,19 @@ const Horario = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-    
+
         // Actualizar el estado de formData
         setFormData((prev) => {
             const newFormData = {
                 ...prev,
                 [name]: value,
             };
-    
+
             // Calcular la diferencia de horas si los campos de fecha están cambiados
             if (name === 'fecha_inicio_hora_ingreso' || name === 'fecha_fin_hora_egreso') {
                 const inicio = new Date(newFormData.fecha_inicio_hora_ingreso);
                 const fin = new Date(newFormData.fecha_fin_hora_egreso);
-    
+
                 if (!isNaN(inicio.getTime()) && !isNaN(fin.getTime())) {
                     const diferenciaMilisegundos = fin - inicio;
                     const diferenciaHoras = diferenciaMilisegundos / (1000 * 60 * 60); // Convertir a horas
@@ -194,7 +197,7 @@ const Horario = () => {
                     newFormData.horas = 0; // Si las fechas no son válidas, establecer las horas en 0
                 }
             }
-    
+
             return newFormData;
         });
     };
@@ -419,9 +422,9 @@ const Horario = () => {
                                         ))}
                                     </select>
                                 </div>
-                                </div>
+                            </div>
 
-                                <div className="fila">
+                            <div className="fila">
                                 <div className="campo">
                                     <label>Día de la semanda:</label>
                                     <select name="dia" value={formData.dia} onChange={handleChange} required className="input">
@@ -500,9 +503,8 @@ const Horario = () => {
                                         <input
                                             type="text"
                                             name="validacion"
-                                            value={formData.validacion}
-                                            onChange={handleChange}
-                                            required
+                                            value="OK"
+                                            readOnly
                                             className="input"
                                         />
                                     </div>
@@ -568,7 +570,6 @@ const Horario = () => {
                                 {usuarios.find((u) => u.id === horario.usuario_id)?.nombres || "No asignado"}{" "}
                                 {usuarios.find((u) => u.id === horario.usuario_id)?.apellidos || ""}
                             </td>
-
                             <td className="td">{fichas.find(p => p.id === horario.ficha_id)?.codigo || 'No asignado'}</td>
                             <td className="td">{periodos.find(p => p.id === horario.periodo_id)?.nombre || 'No asignado'}</td>
                             <td className="td">{horario.fecha_inicio_hora_ingreso}</td>
